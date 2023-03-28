@@ -1,143 +1,161 @@
-# monty
-The Monty language is a scripting language that is first compiled into Monty byte codes. It relies on a unique stack, with specific instructions to manipulate it. The goal of this project is to create an interpreter for Monty ByteCodes files.
+The Monty language
 
-A language interpreter made in the C programming language to manage stacks and queues (LIFO and FIFO). The aim is to interpret Monty bytecodes files. Monty is a language that aims to close the gap between scripting and programming languages.
+Monty 0.98 is a scripting language that is first compiled into Monty byte codes (Just like Python). It relies on a unique stack, with specific instructions to manipulate it. The goal of this project is to create an interpreter for Monty ByteCodes files.
 
-Requirements
-Allowed editors: vi, vim, emacs
-All your files will be compiled on Ubuntu 20.04 LTS using gcc, using the options -Wall -Werror -Wextra -pedantic -std=c90
-All your files should end with a new line
-A README.md file, at the root of the folder of the project is mandatory
-Your code should use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
-You allowed to use a maximum of one global variable
-No more than 5 functions per file
-You are allowed to use the C standard library
-The prototypes of all your functions should be included in your header file called monty.h
-Don’t forget to push your header file
-All your header files should be include guarded
-You are expected to do the tasks in the order shown in the project
-Compilation
-To compile this project, you can use the following command:
 
-$ make
-Allowable opcodes and what they do
-opcode	functionality
-push	add element to the 'top' of stack and 'end' of queue
-pop	remove element from 'top' of stack and 'end' of queue
-pall	print every member of the structure
-pint	prints the member value at the top of stack
-swap	swaps the order of the 1st and 2nd elements in stack
-add	add top two member values
-sub	subtract the top element from the 2nd top element
-div	divide the 2nd element by the top element
-mul	multiply the top two elements of the stack
-mod	the remainder when the 2nd element is divided by the top element
-comment	there is the ability to parse comments found in bytecode ->'#'
-pchar	print character at the top of the stack
-pstr	print the character at the top of the stack
-rotl	moves element at the top to the bottom of the stack
-rotr	the bottom of the stack becomes the top
-queue, stack	toggles the doubly link list implementation style
-nop	opcode should do nothing
-Examples: $ cat opcodetestfile.m
 
-push 1
+Monty byte code files
 
-push 2
 
-push 3
 
-pall
+Files containing Monty byte codes usually have the .m extension. Most of the industry uses this standard but it is not required by the specification of the language. There is not more than one instruction per line. There can be any number of spaces before or after the opcode and its argument:
 
-$ ./montyfile opcodetestfile.m
 
-3
 
-2
+julien@ubuntu:~/monty$ cat -e bytecodes/000.m
 
-1
+push 0$
+
+push 1$
+
+push 2$
+
+  push 3$
+
+                   pall    $
+
+push 4$
+
+    push 5    $
+
+      push    6        $
+
+pall$
+
+julien@ubuntu:~/monty$
+
+Monty byte code files can contain blank lines (empty or made of spaces only, and any additional text after the opcode or its required argument is not taken into account:
+
+
+
+julien@ubuntu:~/monty$ cat -e bytecodes/001.m
+
+push 0 Push 0 onto the stack$
+
+push 1 Push 1 onto the stack$
 
 $
 
-$ cat opcodetestfile.m
+push 2$
 
-push 1
+  push 3$
 
-push 2
+                   pall    $
 
-push 3
+$
 
-pall
+$
 
-rotl
+                           $
 
-pall
+push 4$
 
-$ ./montyfile opcodetestfile.m
+$
 
-3
+    push 5    $
 
-2
+      push    6        $
 
-1
+$
 
-2
+pall This is the end of our program. Monty is awesome!$
 
-1
+julien@ubuntu:~/monty$
 
-3
-
-Exit Status
-Exits with status EXIT_FAILURE
-
-Compilation
-All files were compiled on Ubuntu 14.04 LTS.
-
-All programs and functions were compiled with gcc 4.8.4 using flags -Wall -Werror -Wextra and -pedantic.
-
-Styling
-All files have been written in the Betty Style.
-
-Author
-© Chinasa Ursulla Ukwuoma - Github Account Email:ukwuomaursulla87@gmail.com
+The monty program
 
 
 
-About
-A basic monty bytecode interpreter that executes the instructions using stacks or queues implemented with doubly linked lists.
+Usage: monty file
 
-Resources
- Readme
-Stars
- 2 stars
-Watchers
- 1 watching
-Forks
- 0 forks
-Releases
-No releases published
-Packages
-No packages published
-Contributors 2
-@opius2017
-opius2017 Owolabi Pius
-@Innocentsax
-Innocentsax INNOCENT CHARLES UDO
-Languages
-C
-94.2%
- 
-Brainfuck
-5.8%
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Trai
+where file is the path to the file containing Monty byte code
+
+If the user does not give any file or more than one argument to your program, print the error message USAGE: monty file, followed by a new line, and exit with the status EXIT_FAILURE
+
+If, for any reason, it’s not possible to open the file, print the error message Error: Can't open file <file>, followed by a new line, and exit with the status EXIT_FAILURE
+
+where <file> is the name of the file
+
+If the file contains an invalid instruction, print the error message L<line_number>: unknown instruction <opcode>, followed by a new line, and exit with the status EXIT_FAILURE
+
+where is the line number where the instruction appears.
+
+Line numbers always start at 1
+
+The monty program runs the bytecodes line by line and stop if either:
+
+it executed properly every line of the file
+
+it finds an error in the file
+
+an error occured
+
+If you can’t malloc anymore, print the error message Error: malloc failed, followed by a new line, and exit with status EXIT_FAILURE.
+
+You have to use malloc and free and are not allowed to use any other function from man malloc (realloc, calloc, …)
+Usage
+
+All the files are compiled in the following form:
+
+
+
+ gcc -Wall -Werror -Wextra -pedantic *.c -o monty.
+
+To run the program:
+
+
+
+ ./monty bytecode_file
+gcc -Wall -Werror -Wextra -pedantic *.c -o monty
+
+Available operation codes:
+
+
+
+Opcode	Description
+
+push	Pushes an element to the stack. e.g (push 1 # pushes 1 into the stack)
+
+pall	Prints all the values on the stack, starting from the to of the stack.
+
+pint	Prints the value at the top of the stack.
+
+pop	Removes the to element of the stack.
+
+swap	Swaps the top to elements of the stack.
+
+add	Adds the top two elements of the stack. The result is then stored in the second node, and the first node is removed.
+
+nop	This opcode does not do anything.
+
+sub	Subtracts the top two elements of the stack from the second top element. The result is then stored in the second node, and the first node is removed.
+
+div	Divides the top two elements of the stack from the second top element. The result is then stored in the second node, and the first node is removed.
+
+mul	Multiplies the top two elements of the stack from the second top element. The result is then stored in the second node, and the first node is removed.
+
+mod	Computes the remainder of the top two elements of the stack from the second top element. The result is then stored in the second node, and the first node is removed.
+
+#	When the first non-space of a line is a # the line will be trated as a comment.
+
+pchar	Prints the integer stored in the top of the stack as its ascii value representation.
+
+pstr	Prints the integers stored in the stack as their ascii value representation. It stops printing when the value is 0, when the stack is over and when the value of the element is a non-ascii value.
+
+rotl	Rotates the top of the stack to the bottom of the stack.
+
+rotr	Rotates the bottom of the stack to the top of the stack.
+
+stack	This is the default behavior. Sets the format of the data into a stack (LIFO).
+
+queue	Sets the format of the data into a queue (FIFO).
